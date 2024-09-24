@@ -1,6 +1,6 @@
 
 --1. Provide a SQL script that initializes the database for the Pet
---Adoption Platform îPetPalsî
+--Adoption Platform ‚ÄùPetPals‚Äù
 
 IF NOT EXISTS (SELECT name FROM sys.databases WHERE name = 'PetPals')
 BEGIN
@@ -116,10 +116,10 @@ where AvailableForAdoption=1
 select* from Participants
 declare @EventId int
 set @EventId=2
-
-select ParticipantName,ParticipantType
-from Participants
-where EventId=@EventId
+select p.participantname,p.participanttype
+from participants p
+join adoptionevents ae on p.eventid=ae.eventid
+where p.eventid=@eventid;
 
 
 
