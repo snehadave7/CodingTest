@@ -216,9 +216,9 @@ WHERE ParticipantId IS NULL;
 select*from participants
 select*from pets
 
-select participantname as Owner,petName
+select participantname as AdopterName,petName
 from participants as p join pets on p.participantid=pets.participantid
-where availableForAdoption=1
+where ParticipantType='adopter'
 
 17. Retrieve a list of all shelters along with the count of pets currently available for adoption in each
 shelter.
