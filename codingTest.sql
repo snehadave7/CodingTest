@@ -130,10 +130,10 @@ where p.eventid=@eventid;
 select*from Shelters
 select* from Donations
 
-SELECT Shelters.Name, COALESCE(SUM(DonationAmount), 0) AS TotalDonations
-FROM Donations
-JOIN Shelters ON Shelters.ShelterID = Donations.ShelterID
-GROUP BY Shelters.Name;
+select s.name as sheltername,COALESCE(SUM(DonationAmount), 0) as totaldonationamount
+from donations d
+right join shelters s on d.shelterid=s.shelterid
+group by s.name
 
 --9 Write an SQL query that retrieves the names of pets from the "Pets" table that do not have an
 --owner (i.e., where "OwnerID" is null). Include the pet's name, age, breed, and type in the result
