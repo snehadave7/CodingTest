@@ -144,7 +144,7 @@ add ParticipantId int
 
 select PetName,PetAge,PetBreed,Type
 from pets
-where participantid is not null
+where participantid is null
 
 --10 Write an SQL query that retrieves the total donation amount for each month and year (e.g.,
 --January 2023) from the "Donations" table. The result should include the month-year and the
