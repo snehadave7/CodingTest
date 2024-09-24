@@ -223,11 +223,12 @@ where availableForAdoption=1
 17. Retrieve a list of all shelters along with the count of pets currently available for adoption in each
 shelter.
 
-SELECT Shelters.Name AS ShelterName, COUNT(Pets.PetID) AS AvailablePets
-FROM Pets
-JOIN Shelters ON Pets.ShelterID = Shelters.ShelterID
-WHERE Pets.AvailableForAdoption = 1
-GROUP BY Shelters.Name;
+select s.name as sheltername,count(p.petid) as availablepetscount
+from shelters s
+left join pets p on s.shelterid=p.shelterid
+where p.availableforadoption=1
+group by s.name
+
 
 18. Find pairs of pets from the same shelter that have the same breed.
 
