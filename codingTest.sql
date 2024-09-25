@@ -109,17 +109,21 @@ select PetName,PetAge,PetAge,Type
 from Pets
 where AvailableForAdoption=1
 
+
+
+
 --6 Write an SQL query that retrieves the names of participants (shelters and adopters) registered
 --for a specific adoption event. Use a parameter to specify the event ID. Ensure that the query
 --joins the necessary tables to retrieve the participant names and types.
 
 select* from Participants
+
 declare @EventId int
 set @EventId=2
 select p.participantname,p.participanttype
 from participants p
 join adoptionevents ae on p.eventid=ae.eventid
-where p.eventid=@eventid;
+where p.eventid=@eventid
 
 
 
@@ -138,7 +142,7 @@ group by s.name
 --9 Write an SQL query that retrieves the names of pets from the "Pets" table that do not have an
 --owner (i.e., where "OwnerID" is null). Include the pet's name, age, breed, and type in the result
 --set
-
+select* from pets
 alter table pets
 add ParticipantId int
 
@@ -165,50 +169,55 @@ ORDER BY MonthYear
 
 SELECT DISTINCT PetBreed
 FROM Pets
-WHERE (PetAge BETWEEN 1 AND 3) OR PetAge > 5;
+WHERE (PetAge BETWEEN 1 AND 3) OR PetAge > 5
 
 --12. Retrieve a list of pets and their respective shelters where the pets are currently available for
 --adoption.
 
 select*from pets
 select*from Shelters
+
 alter table pets
 add shelterid int
 alter table pets
 add constraint FK_Pet_shelter
 foreign key(shelterid) references shelters(shelterid)
 
-
 SELECT Pets.PetName AS PetName, Shelters.Name AS ShelterName
 FROM Pets
 JOIN Shelters ON Pets.ShelterID = Shelters.ShelterID
-WHERE Pets.AvailableForAdoption = 1;
+WHERE Pets.AvailableForAdoption = 1 AND ParticipantId IS NULL --CHANGE
 
 
-13. Find the total number of participants in events organized by shelters located in specific city.
+--13. Find the total number of participants in events organized by shelters located in specific city.
 --Example: City=kolar
-
+ 
 select*from Shelters
+select*from Participants
 select*from AdoptionEvents
+
 SELECT COUNT(Participants.ParticipantID) AS TotalParticipants
 FROM Participants
 JOIN AdoptionEvents ON Participants.EventID = AdoptionEvents.EventID
 JOIN Shelters ON AdoptionEvents.Location = Shelters.Loaction
-WHERE Shelters.Loaction = 'bhel';
+WHERE Shelters.Loaction = 'kolar'
 
 
-14. Retrieve a list of unique breeds for pets with ages between 1 and 5 years.
+--14. Retrieve a list of unique breeds for pets with ages between 1 and 5 years.
 SELECT DISTINCT PetBreed
-
 FROM Pets
-WHERE PetAge BETWEEN 1 AND 5;
+WHERE PetAge BETWEEN 1 AND 5
 
-15. Find the pets that have not been adopted by selecting their information from the 'Pet' table.
+--15. Find the pets that have not been adopted by selecting their information from the 'Pet' table.
 
 SELECT PetName, PetAge, PetBreed, Type
 FROM Pets
-WHERE ParticipantId IS NULL;
-
+WHERE ParticipantId IS NULL
+/*
+update pets
+set AvailableForAdoption=0
+where ParticipantId is not null
+*/
 
 --16. Retrieve the names of all adopted pets along with the adopter's name from the 'Adoption' and
 --'User' tables.
@@ -220,43 +229,46 @@ select participantname as AdopterName,petName
 from participants as p join pets on p.participantid=pets.participantid
 where ParticipantType='adopter'
 
-17. Retrieve a list of all shelters along with the count of pets currently available for adoption in each
-shelter.
+--17. Retrieve a list of all shelters along with the count of pets currently available for adoption in each
+--shelter.
 
 select s.name as sheltername,count(p.petid) as availablepetscount
 from shelters s
 left join pets p on s.shelterid=p.shelterid
-where p.availableforadoption=1
+where p.availableforadoption=1 and p.ParticipantId is null 
 group by s.name
 
 
-18. Find pairs of pets from the same shelter that have the same breed.
+--18. Find pairs of pets from the same shelter that have the same breed.
 
 select* from pets
-select * from Shelters
-SELECT p1.petName AS Pet1, p2.petName AS Pet2, p1.petBreed
+--insert into pets values ('Rocky',2,'Husky','Dog',1,null,4)
+
+SELECT  p1.petName AS Pet1, p2.petName AS Pet2, p1.petBreed
 FROM Pets p1
 JOIN Pets p2 ON p1.ShelterID = p2.ShelterID AND p1.petBreed = p2.petBreed 
-AND p1.PetID != p2.PetID;
+AND p1.PetID < p2.PetID
 
 
-19. List all possible combinations of shelters and adoption events.
+
+--19. List all possible combinations of shelters and adoption events.
 
 select* from AdoptionEvents
 select* from Shelters
+
 SELECT Shelters.Name AS ShelterName,Shelters.Loaction, AdoptionEvents.EventNamne,AdoptionEvents.EventDate,AdoptionEvents.Location
 FROM Shelters
-CROSS JOIN AdoptionEvents;
+CROSS JOIN AdoptionEvents
 
-20. Determine the shelter that has the highest number of adopted pets.
+
+--20. Determine the shelter that has the highest number of adopted pets.
 
 select*from shelters
 select* from pets
 
-SELECT top 1 S.Name AS ShelterName, COUNT(P.PetId) AS AdoptedPetsCount
-FROM Shelters S
-JOIN Pets P ON S.ShelterId = P.ShelterId
-WHERE P.AvailableForAdoption = 1  -- Only consider adopted pets
-GROUP BY S.Name
-ORDER BY  AdoptedPetsCount DESC
- -- Get the shelter with the highest count
+select  top 1 name,count(p.shelterid) as countOfAdoptedPets
+from pets as p
+join Shelters as s on p.shelterid=s.shelterid  
+where AvailableForAdoption=0
+group by name
+order by countOfAdoptedPets desc
