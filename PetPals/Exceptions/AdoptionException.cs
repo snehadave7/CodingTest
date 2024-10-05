@@ -6,13 +6,8 @@ using System.Threading.Tasks;
 
 namespace PetPals.Exceptions {
     internal class AdoptionException {
-      
+      public AdoptionException() { }
+        public AdoptionException(string message) : base(message) { }
     }
 }
 
-namespace exception.Exceptions {
-    internal class ProductAlreadyExistException : ApplicationException { 
-        public ProductAlreadyExistException() { }
-        public ProductAlreadyExistException(string message) : base(message) { }
-    }
-}
