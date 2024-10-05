@@ -6,5 +6,7 @@ using System.Threading.Tasks;
 
 namespace PetPals.Exceptions {
     internal class NullReferenceException {
+        public NullReferenceException() { }
+        public NullReferenceException (string message) : base(message) { }
     }
 }
